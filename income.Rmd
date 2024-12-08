@@ -1,0 +1,151 @@
+---
+title: "UNIVARIATE"
+author: "Devanshi"
+date: "2024-12-03"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+The preliminary analysis of data to discover relationships between measures in the data and to gain an insight on the trends, patterns, and relationships among various entities present in the data set with the help of statistics and visualization tools is called Exploratory Data Analysis (EDA). 
+
+Exploratory data analysis is cross-classified in two different ways where each method is either graphical or non-graphical. And then, each method is either univariate, bivariate or multivariate.
+
+Uni means one and variate means variable, so in univariate analysis, there is only one dependable variable. The objective of the univariate analysis is to derive the data, define and summarize it, and analyze the pattern present in it. In a dataset, it explores each variable separately. It is possible for two kinds of variables- Categorical and Numerical.
+
+
+
+
+
+*About the data* 
+The first dataset contains observations about income (in a range of $15k to $75k) and happiness (rated on a scale of 1 to 10) in an imaginary sample of 500 people. The income values are divided by 10,000 to make the income data match the scale of the happiness scores (so a value of $2 represents $20,000, $3 is $30,000, etc.)
+
+
+```{r}
+#Load Dataset
+happiness<-read.csv("income.data.csv")
+
+#View Dataset
+happiness
+
+head(happiness)
+
+
+```
+
+
+```{r}
+#structure of dataset
+
+str(happiness)
+
+```
+
+```{r}
+#Descriptive statistics
+
+summary(happiness)
+
+```
+
+```{r}
+#Finding null values
+
+any(is.na(happiness))    #There are no null values in the dataset
+
+```
+
+
+```{r}
+#In this dataset we have only one dependant and one independant variable so we dont need to find the hidden relationships using correlation but we can show that.
+
+cor(happiness$income, happiness$happiness)
+
+
+#as matrix
+cor(happiness)
+
+
+
+
+
+```
+
+```{r}
+#boxplot
+boxplot(happiness$income,
+        main = "Boxplot of Income",
+        xlab = "Income",
+        ylab = "Values",
+        col = "skyblue",
+        border = "darkblue")
+
+
+```
+
+
+```{r}
+boxplot(happiness$happiness,
+        main = "Boxplot of happiness",
+        xlab = "happiness",
+        ylab = "Values",
+        col = "skyblue",
+        border = "darkblue")
+
+```
+
+```{r}
+#Histogram
+
+hist(happiness$happiness,
+     main="Histogram of Happiness",
+     xlab = "Happiness",
+     ylab = "Frequency",
+     col = "Skyblue"
+     )
+
+# This shows that our data is normally distributed
+```
+
+
+
+
+```{r}
+plot(happiness ~ income, data = happiness,
+     main="Scatter plot",
+     xlab = "Happiness",
+     ylab = "Frequency",
+     col = "blue")
+
+
+```
+
+
+```{r}
+happiness.lm <- lm(happiness ~ income, data = happiness)
+
+summary(happiness.lm)
+
+#p value is almost to zero so that we can say that the models fits the dataset,and  we can say that there is a significant positive relationship between income and happiness (p value < 0.001), increase in happiness for every unit increase in income. 
+
+
+```
+
+```{r}
+
+graph<-ggplot(happiness, aes(x=income, y=happiness))+
+                   geom_point()
+graph  
+
+graph2 <- graph + geom_smooth(method="lm", col="blue")
+
+graph2
+
+```
+
+
+```{r}
+
+
+```

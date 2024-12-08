@@ -1,0 +1,221 @@
+---
+title: "Untitled"
+author: "Devanshi"
+date: "2024-12-03"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+#LOAD THE DATASET
+
+world <- read.csv("2019.csv")
+head(world)
+
+```
+
+*perform univariate analysis*
+
+```{r}
+str(world)
+
+```
+
+```{r}
+#descriptive stats
+summary(world)
+
+```
+
+
+```{r}
+any(is.na(world))    #There are no null values in the dataset
+
+
+```
+
+```{r}
+#Drop non numeric data for finding the relationship
+library(corrplot)
+world_drop <- world[ , -2]
+world_drop
+```
+
+```{r}
+#Correlation
+corr_matrix<-cor(world_drop)
+corr_matrix
+```
+
+```{r}
+
+corrplot(corr_matrix, method="square")  # You can change the method to "ellipse", "number", etc.
+
+
+
+```
+
+```{r}
+#boxplot
+boxplot(world$GDP.per.capita,
+        main = "Boxplot of GDP",
+        xlab = "GDP PER CAPITA",
+        ylab = "Values",
+        col = "skyblue",
+        border = "darkblue")
+
+```
+
+```{R}
+boxplot(world$Perceptions.of.corruption,
+        main = "Boxplot of perception OF CORRUPTION",
+        xlab = "Perception of corruption",
+        ylab = "Values",
+        col = "skyblue",
+        border = "darkblue")
+
+```
+```{r}
+#Histogram
+
+hist(world$Score,
+     main="Histogram of Score",
+     xlab = "Score",
+     ylab = "Frequency",
+     col = "Skyblue"
+     )
+
+```
+```{r}
+hist(world$Healthy.life.expectancy,
+     main="Histogram of healthy life expentancy ",
+     xlab = "Healthy life expectancy",
+     ylab = "Frequency",
+     col = "Skyblue"
+     )
+
+```
+```{r}
+plot(GDP.per.capita ~ Score, data = world,
+     main="Scatter plot",
+     xlab = "GDP.per.capita",
+     ylab = "Score",
+     col = "blue")
+
+```
+
+```{r}
+
+plot(Healthy.life.expectancy ~ Score, data = world,
+     main="Scatter plot",
+     xlab = "Healthy.life.expentancy",
+     ylab = "Score",
+     col = "blue")
+
+```
+
+```{r}
+# Install necessary package for data splitting
+library(caTools)
+
+# Split the data into training and testing sets
+set.seed(123)  # Set seed for reproducibility
+split <- sample.split(world$Healthy.life.expectancy, SplitRatio = 0.8)
+training_set <- subset(world, split == TRUE)
+testing_set <- subset(world, split == FALSE)
+
+
+```
+
+```{r}
+# Build the linear regression model
+model <- lm(Score ~ Healthy.life.expectancy, data = training_set)
+
+# Model summary
+summary(model)
+
+
+```
+
+```{r}
+# Predict on the test set
+predictions <- predict(model, newdata = testing_set)
+
+# Compare predictions with actual values
+comparison <- data.frame(Actual = testing_set$Score, Predicted = predictions)
+print(comparison)
+
+# Calculate Mean Squared Error (MSE)
+mse <- mean((comparison$Actual - comparison$Predicted)^2)
+cat("Mean Squared Error:", mse, "\n")
+
+
+```
+& pch = 19 means that the points in the scatter plot will be filled circles.
+The standard deviation of residuals, showing how much the observed values deviate from the model's predictions. A smaller value indicates a better model fit.
+
+```{r}
+# Plot training data and regression line
+plot(training_set$GDP.per.capita, training_set$Score, 
+     main = "Linear Regression: Healthy life expectancy vs GDP per Capita", 
+     xlab = "Healthy life expectancy", ylab = "Score", col = "blue", pch = 19)
+abline(model, col = "red")
+
+
+```
+
+
+*GDP VS SCORE*
+
+```{r}
+
+plot(GDP.per.capita ~ Score, data = world,
+     main="Scatter plot",
+     xlab = "GDP.per.capita",
+     ylab = "Score",
+     col = "blue")
+```
+
+```{r}
+# Split the data into training and testing sets
+set.seed(123)  # Set seed for reproducibility
+split <- sample.split(world$GDP.per.capita, SplitRatio = 0.8)
+training_set <- subset(world, split == TRUE)
+testing_set <- subset(world, split == FALSE)
+
+
+```
+
+```{R}
+# Build the linear regression model
+model <- lm(Score ~ GDP.per.capita, data = training_set)
+
+# Model summary
+summary(model)
+
+```
+
+```{r}
+# Predict on the test set
+predictions <- predict(model, newdata = testing_set)
+
+# Compare predictions with actual values
+comparison <- data.frame(Actual = testing_set$Score, Predicted = predictions)
+print(comparison)
+
+# Calculate Mean Squared Error (MSE)
+mse <- mean((comparison$Actual - comparison$Predicted)^2)
+cat("Mean Squared Error:", mse, "\n")
+
+```
+
+```{r}
+# Plot training data and regression line
+plot(training_set$GDP.per.capita, training_set$Score, 
+     main = "Linear Regression: GDP per Capita vs Score", 
+     xlab = "GDP per capita", ylab = "Score", col = "blue", pch = 19)
+abline(model, col = "red")
+```
